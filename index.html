@@ -11,7 +11,7 @@
 
 <body>
     <div class="container">
-        <div class="bubbles">
+        <div class="bubbles" aria-hidden="true">
             <span style="--i:11;"></span>
             <span style="--i:12;"></span>
             <span style="--i:24;"></span>
@@ -75,10 +75,11 @@
         </div>
         <div class="resultado">
             <form>
-                <input type="number" id="input" placeholder="Digite o número..">
-                <button type="button" id="botao">Transformar!</button>
+                <label for="input">Número decimal</label>
+                <input type="number" id="input" step="any" required>
+                <button type="submit">Transformar</button>
             </form>
-            <span class="spanBinario"></span>
+            <output id="bits" for="input" aria-label="Representação binária"></output>
         </div>
     </div>
     <script src="./assets/js/index.js"></script>

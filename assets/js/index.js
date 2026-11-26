@@ -1,77 +1,21 @@
-botao = document.querySelector("#botao");
-input = document.querySelector("#input");
-span = document.querySelector(".spanBinario");
-function transformarBinario(numero) {
-  binario = "";
-  while (Math.trunc(numero) != 0) {
-    
-    if (Math.trunc(numero) % 2 == 1) {
-      binario += "1";
-    } else if (Math.trunc(numero) % 2 == 0) {
-      binario += "0";
-    }
-    numero /= 2;
-  }
-  while (binario.length < 8){
-    binario += 0;
-  }
-  return reverterString(binario);
-}
+"use strict";
 
-function reverterString(str) {
-  return str === "" ? "" : reverterString(str.substr(1)) + str.charAt(0);
-}
+const form = document.querySelector("form");
+const input = document.querySelector("#input");
+const output = document.querySelector("#bits");
+const bytes = new DataView(new ArrayBuffer(4));
 
-botao.addEventListener("click", function () {
-  numeroemBinario = "";
-  contadorExpoente = 0;
-  if (input.value == "") {
-    return 0;
+form.addEventListener("submit", (event) => {
+  event.preventDefault();
+
+  if (!form.reportValidity()) {
+    return;
   }
 
-  xinput = input.value;
-  if (input.value < 0){
-    xinput = Math.abs(input.value);
-  }
-  if (xinput >= 1)
-  {while (xinput >= 2) {
-    contadorExpoente++;
-    xinput /= 2;
-  }
-}
-if(xinput < 1){
-    while(xinput < 1){
-        contadorExpoente--;
-        xinput *= 2;
-    }
-}
+  bytes.setFloat32(0, input.valueAsNumber, false);
+  output.textContent = bytes.getUint32(0, false).toString(2).padStart(32, "0");
+});
 
-  string = "";
-  contador = 0;
-  while (xinput != 0.0) {
-    console.log(xinput)
-    contador++;
-    if (xinput >= 1 && xinput < 2) {
-      xinput -= 1;
-    }
-    else if (xinput >= 2){
-      xinput -= 2;
-    }
-    xinput *= 2;
-    if (xinput >= 1) {
-      string += "1";
-    } else if (xinput <= 1) {
-      string += "0";
-    }
-    if (contador == 23) break;
-    
-  }
-  console.log(string.length)
-  for (string; string.length < 23; contador++) {
-    string += "0";
-  }
-  input.value > 0 ? (numeroemBinario += "0") : (numeroemBinario += "1");
-  numeroemBinario += transformarBinario(contadorExpoente + 127);
-  numeroemBinario += string;
-  span.innerHTML = numeroemBinario;
+input.addEventListener("input", () => {
+  output.textContent = "";
 });
