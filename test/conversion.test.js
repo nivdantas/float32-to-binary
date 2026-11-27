@@ -13,7 +13,7 @@ function loadConverter() {
     addEventListener: (name, handler) => { handlers[name] = handler; },
   };
   const input = {
-    valueAsNumber: NaN,
+    value: "",
     addEventListener: (name, handler) => { handlers[name] = handler; },
   };
   const output = { textContent: "" };
@@ -37,7 +37,8 @@ function loadConverter() {
 
 const cases = [
   ["positive zero", 0, 0x00000000],
-  ["negative zero", -0, 0x80000000],
+  ["negative zero", "-0", 0x80000000],
+  ["negative zero in scientific notation", "-0e2", 0x80000000],
   ["negative fraction", -2.5, 0xc0200000],
   ["rounding up", 0.1, 0x3dcccccd],
   ["tie rounds to even", 1 + 2 ** -24, 0x3f800000],
@@ -49,7 +50,7 @@ const cases = [
 for (const [name, value, expected] of cases) {
   test(name, () => {
     const converter = loadConverter();
-    converter.input.valueAsNumber = value;
+    converter.input.value = String(value);
     converter.submit();
     assert.equal(converter.output.textContent, expected.toString(2).padStart(32, "0"));
   });
@@ -57,11 +58,11 @@ for (const [name, value, expected] of cases) {
 
 test("editing clears stale bits and invalid input leaves the result empty", () => {
   const converter = loadConverter();
-  converter.input.valueAsNumber = 1;
+  converter.input.value = "1";
   converter.submit();
   assert.equal(converter.output.textContent.length, 32);
 
-  converter.input.valueAsNumber = NaN;
+  converter.input.value = "";
   converter.edit();
   converter.form.reportValidity = () => false;
   converter.submit();

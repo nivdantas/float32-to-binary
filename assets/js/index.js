@@ -12,7 +12,8 @@ form.addEventListener("submit", (event) => {
     return;
   }
 
-  bytes.setFloat32(0, input.valueAsNumber, false);
+  // Some browsers normalize -0 to +0 in valueAsNumber.
+  bytes.setFloat32(0, Number(input.value), false);
   output.textContent = bytes.getUint32(0, false).toString(2).padStart(32, "0");
 });
 
